@@ -22,12 +22,8 @@ chmod +x build run restart
 
 If you prefer, run them with `bash` instead of `chmod`.
 
-## One-time setup
-
-Before first use, edit `run` and adjust host-specific mounts:
-
-- Update the host path in `-v <host-path>:/workspace` to where you want your assignments stored.
-- Keep or remove `-v ~/.ssh:/root/.ssh:ro` depending on whether you use SSH keys inside the container.
+## SSH
+- The container mounts your local ssh keys so you can just use the ssh keys already on your local computer.
 
 ## Build image
 
