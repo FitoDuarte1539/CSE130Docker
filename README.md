@@ -112,6 +112,11 @@ docker start -ai <container-name>
 | Restart default container | `./restart` |
 | Restart named container | `./restart --name cse130-2` |
 
+## Important Docker Commands
+- If you wish to clear all the containers do `docker container prune`
+- If you wish to list active containers do `docker ps -a`
+- There are many other commands that do useful things. You can find them online quite easily.
+
 ## Image details
 
 - Image name: `cse130-dev`
