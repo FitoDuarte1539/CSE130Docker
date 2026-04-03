@@ -1,0 +1,4 @@
+docker run -it \
+  -v ~/.ssh:/root/.ssh:ro \
+  -v ~/Desktop/Coding/testForCSE130Docker/persistentStorage:/workspace \
+  cse130-dev
