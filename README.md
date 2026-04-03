@@ -1,5 +1,10 @@
 # CSE 130 Docker dev environment
 
+## Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+
+
 ## Start here
 
 ```bash
@@ -15,10 +20,6 @@ chmod +x build run restart
 Lightweight Docker setup for **UCSC CSE 130** (or similar C projects): Ubuntu 24.04 with common systems tooling like `clang`, `make`, `valgrind`, `git`, `vim`, `curl`, `clang-format`, and `clang-tools`.
 
 Your code stays on your host machine through a bind mount to `/workspace`, so files persist after the container exits.
-
-## Prerequisites
-
-- [Docker](https://docs.docker.com/get-docker/) installed and running.
 
 ## Scripts
 
