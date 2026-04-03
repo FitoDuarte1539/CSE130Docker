@@ -39,8 +39,13 @@ else
   NAME=cse130
 fi
 
+# Always use project-local persistent storage next to this script.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PERSISTENT_STORAGE_DIR="$SCRIPT_DIR/persistentStorage"
+mkdir -p "$PERSISTENT_STORAGE_DIR"
+
 docker run -it \
   -v ~/.ssh:/root/.ssh:ro \
-  -v ~/Desktop/Coding/testForCSE130Docker/persistentStorage:/workspace \
+  -v "$PERSISTENT_STORAGE_DIR":/workspace \
   --name "$NAME" \
   cse130-dev
