@@ -1,74 +1,116 @@
 # CSE 130 Docker dev environment
 
-A small Docker setup for **UCSC CSE 130** (or anyone who wants the same toolchain): Ubuntu 24.04 with **clang**, **make**, **valgrind**, **git**, **vim**, **curl**, **clang-format**, **clang-tidy**, and related build tools. Your work lives in a **host folder** mounted at `/workspace` inside the container so it persists after the container stops.
+Lightweight Docker setup for **UCSC CSE 130** (or similar C projects): Ubuntu 24.04 with common systems tooling like `clang`, `make`, `valgrind`, `git`, `vim`, `curl`, `clang-format`, and `clang-tools`.
+
+Your code stays on your host machine through a bind mount to `/workspace`, so files persist after the container exits.
 
 ## Prerequisites
 
-- [Docker](https://docs.docker.com/get-docker/) installed and running (Docker Desktop on macOS is fine).
+- [Docker](https://docs.docker.com/get-docker/) installed and running.
+
+## Scripts
+
+- `build`: builds image `cse130-dev`
+- `run`: starts a new interactive container
+- `restart`: starts and attaches to an existing container
+
+Make them executable once:
+
+```bash
+chmod +x build run restart
+```
+
+If you prefer, run them with `bash` instead of `chmod`.
 
 ## One-time setup
 
-1. Clone this repo and `cd` into it.
+Before first use, edit `run` and adjust host-specific mounts:
 
-2. **Edit `run`** before the first run:
-   - Set the **left side** of the workspace mount (`-v ...:/workspace`) to a folder on *your* machine where you want assignments to live (create that folder if needed).
-   - The `-v ~/.ssh:/root/.ssh:ro` line lets you use **Git over SSH** from inside the container. It lets the container see your local .ssh directory.
-   Remove it if you do not use SSH keys or prefer HTTPS only.
+- Update the host path in `-v <host-path>:/workspace` to where you want your assignments stored.
+- Keep or remove `-v ~/.ssh:/root/.ssh:ro` depending on whether you use SSH keys inside the container.
 
-3. **Make the scripts executable** (once):
+## Build image
 
-   ```bash
-   chmod +x build run
-   ```
+Run this after cloning, after pulling `Dockerfile` changes, or whenever you need a rebuild:
 
-4. **Build the image** (do this after pulling changes or editing the `Dockerfile`):
+```bash
+./build
+```
 
-   ```bash
-   ./build
-   ```
+## Create and enter a container
 
-## Run the container
-
-From the repo directory:
+Default behavior:
 
 ```bash
 ./run
 ```
 
-If you prefer not to use `chmod`, you can run `bash build` and `bash run` instead.
+- Creates container `cse130` if it does not already exist.
+- Attaches an interactive shell.
+- `exit` stops the container, but files in mounted host paths remain.
 
-That starts an interactive shell in a container named **`cse130`**. Type `exit` when you are done; the container stops but your files remain on the host thanks to the volume mount.
+### When `cse130` already exists
 
-## Restart after exiting
-
-When the container already exists but is stopped, start it again and attach to the shell:
+`run` now protects you from accidental duplicates:
 
 ```bash
-docker start -ai cse130
+./run
 ```
 
-If this repo adds a **`restart`** helper script, use `./restart` after `chmod +x restart`—it should run the same `docker start -ai cse130` (or equivalent) for you.
+returns an error if `cse130` already exists.
 
-### If `docker run` says the name is already in use
-
-You already have a container named `cse130`. Either **restart** it with the command above, or remove it and run `./run` again:
+To intentionally create an additional container:
 
 ```bash
-docker rm -f cse130
-./run
+./run --force
+```
+
+or:
+
+```bash
+./run -f
+```
+
+This auto-selects the next free name (`cse130-2`, `cse130-3`, ...).
+
+## Restart an existing container
+
+Restart and attach to `cse130`:
+
+```bash
+./restart
+```
+
+Restart and attach to a specific container:
+
+```bash
+./restart --name cse130-2
+```
+
+Equivalent Docker command:
+
+```bash
+docker start -ai <container-name>
 ```
 
 ## Quick reference
 
-| Step    | Command        |
-|---------|----------------|
-| Build   | `./build`      |
-| Run     | `./run`        |
-| Restart | `docker start -ai cse130` (or `./restart` when you add that script) |
+| Step | Command |
+|---|---|
+| Build image | `./build` |
+| New container (default name) | `./run` |
+| New container (auto-suffixed name) | `./run -f` |
+| Restart default container | `./restart` |
+| Restart named container | `./restart --name cse130-2` |
 
 ## Image details
 
-- **Image name:** `cse130-dev` (set in `build`)
-- **Default command:** `/bin/bash` in `/workspace`
+- Image name: `cse130-dev`
+- Working directory: `/workspace`
+- Default command: `/bin/bash`
 
-If something fails, check that Docker is running and that paths in `run` exist on your machine.
+## Troubleshooting
+
+- Ensure Docker is running.
+- Ensure host paths in `run` actually exist.
+- If startup fails, verify image exists with `docker images | rg cse130-dev`.
