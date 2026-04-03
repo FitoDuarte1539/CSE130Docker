@@ -1,4 +1,7 @@
+#!/usr/bin/env bash
+set -euo pipefail
 docker run -it \
   -v ~/.ssh:/root/.ssh:ro \
   -v ~/Desktop/Coding/testForCSE130Docker/persistentStorage:/workspace \
+  --name cse130 \
   cse130-dev
